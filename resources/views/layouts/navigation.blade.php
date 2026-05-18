@@ -19,6 +19,14 @@
                     <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                         {{ __('Personal') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.services.index')" :active="request()->routeIs('admin.services.*')">
+                        {{ __('Servicios') }}
+                    </x-nav-link>
+                    @endrole
+                    @role('barbero')
+                    <x-nav-link :href="route('barber.schedules.index')" :active="request()->routeIs('barber.schedules.*')">
+                        {{ __('Mis Horarios') }}
+                    </x-nav-link>
                     @endrole
                 </div>
             </div>
@@ -78,6 +86,14 @@
             @role('admin')
             <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                 {{ __('Personal') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.services.index')" :active="request()->routeIs('admin.services.*')">
+                {{ __('Servicios') }}
+            </x-responsive-nav-link>
+            @endrole
+            @role('barbero')
+            <x-responsive-nav-link :href="route('barber.schedules.index')" :active="request()->routeIs('barber.schedules.*')">
+                {{ __('Mis Horarios') }}
             </x-responsive-nav-link>
             @endrole
         </div>
