@@ -1,0 +1,102 @@
+# Implementación de Roles y Permisos (Spatie)
+
+La implementación del sistema de roles se ha completado. A continuación detallo cada uno de los archivos que he creado o modificado, así como la explicación de qué hace cada fragmento de código.
+
+## 1. Instalación y Migraciones de Base de Datos
+Primero instalé el paquete ejecutando `composer require spatie/laravel-permission` y publiqué sus migraciones.
+Esto creó un archivo de migración que, al ejecutar `php artisan migrate`, generó 5 tablas nuevas en tu base de datos:
+- `roles` (para guardar los nombres de los roles: admin, barbero, etc.)
+- `permissions` (para guardar permisos específicos si los necesitas a futuro)
+- `model_has_roles` (tabla intermedia que une un usuario con un rol)
+- `model_has_permissions` y `role_has_permissions`
+
+## 2. Modelo de Usuario
+
+#### [MODIFY] [app/Models/User.php](file:///c:/Users/ErickCastilla/Documents/OctavoSemestre/Backend/barber-system/app/Models/User.php)
+Se modificó este archivo para incluir el _trait_ `HasRoles`.
+
+```php
+use Spatie\Permission\Traits\HasRoles; // Importación de la clase
+
+class User extends Authenticatable
+{
+    // Se añade HasRoles a los traits del modelo
+    use HasFactory, Notifiable, HasRoles; 
+    ...
+```
+**¿Qué hace esto?**
+Al agregar `HasRoles`, ahora en cualquier parte de tu código de Laravel puedes hacer cosas como:
+- `$user->assignRole('admin')` (Para darle un rol a un usuario)
+- `$user->hasRole('barbero')` (Devuelve `true` si es barbero, útil para mostrar u ocultar menús)
+
+## 3. Semillas de Base de Datos (Seeders)
+
+#### [NEW] [database/seeders/RoleSeeder.php](file:///c:/Users/ErickCastilla/Documents/OctavoSemestre/Backend/barber-system/database/seeders/RoleSeeder.php)
+Creé este archivo para inicializar los roles automáticamente. 
+
+```php
+use Spatie\Permission\Models\Role;
+
+public function run(): void
+{
+    // 1. Rol 'admin': Tiene acceso total al sistema. Puede gestionar barberos, servicios, configuraciones y ver todo.
+    Role::create(['name' => 'admin']);
+
+    // 2. Rol 'barbero': Accede a su propia agenda, puede ver sus citas asignadas y marcarlas como completadas.
+    Role::create(['name' => 'barbero']);
+
+    // 3. Rol 'recepcionista': Encargado de la atención al cliente. Puede crear, editar o cancelar citas de cualquier barbero, pero no accede a configuraciones del sistema.
+    Role::create(['name' => 'recepcionista']);
+
+    // 4. Rol 'cliente': El usuario final que entra al sistema para agendar su propia cita.
+    Role::create(['name' => 'cliente']);
+}
+```
+**¿Qué hace esto?**
+Inserta en la tabla `roles` de tu base de datos estas 4 filas con los nombres de los roles correspondientes para que ya estén disponibles.
+
+#### [MODIFY] [database/seeders/DatabaseSeeder.php](file:///c:/Users/ErickCastilla/Documents/OctavoSemestre/Backend/barber-system/database/seeders/DatabaseSeeder.php)
+Modifiqué el sembrador principal para que ejecute el `RoleSeeder` y cree un primer usuario de prueba con el rol de Administrador.
+
+```php
+public function run(): void
+{
+    // Ejecutamos el seeder de roles que acabamos de crear
+    $this->call(RoleSeeder::class);
+
+    // Creamos un usuario de prueba para ser el administrador principal
+    $adminUser = User::factory()->create([
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+    ]);
+
+    // Le asignamos el rol de 'admin' usando el trait HasRoles
+    $adminUser->assignRole('admin');
+}
+```
+
+Luego de crear esto, ejecuté el comando `php artisan db:seed`, por lo que **tu base de datos ya tiene estos roles cargados** y tu usuario principal ya es Administrador.
+
+## 4. Middlewares de Rutas
+
+#### [MODIFY] [bootstrap/app.php](file:///c:/Users/ErickCastilla/Documents/OctavoSemestre/Backend/barber-system/bootstrap/app.php)
+Laravel 11 cambió la forma en la que se registran los middlewares. Los agregué a la configuración global de la aplicación.
+
+```php
+->withMiddleware(function (Middleware $middleware): void {
+    // Registramos los alias de Spatie para poder usarlos en las rutas
+    // Ejemplo de uso: Route::get('/admin', ...)->middleware('role:admin');
+    $middleware->alias([
+        'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+    ]);
+})
+```
+**¿Qué hace esto?**
+Esto crea atajos o alias para usar en tu archivo de rutas (`routes/web.php` o `routes/api.php`). Ahora puedes proteger rutas fácilmente usando `->middleware('role:admin|recepcionista')`. 
+
+---
+
+> [!TIP]
+> Puedes visualizar las tablas creadas (`roles`, `model_has_roles`, etc.) ingresando a tu base de datos SQLite o MySQL. El usuario `test@example.com` ya tiene el rol `admin` asignado de forma exitosa.
