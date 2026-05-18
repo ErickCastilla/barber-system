@@ -43,11 +43,11 @@
                 </a>
             @else
                 <a href="{{ route('login') }}" class="text-sm font-semibold tracking-[0.2em] text-gray-400 hover:text-white transition-colors uppercase">
-                    LOG IN
+                    Iniciar Sesión
                 </a>
                 @if (Route::has('register'))
                     <a href="{{ route('register') }}" class="text-sm font-semibold tracking-[0.2em] text-gray-400 hover:text-white transition-colors uppercase">
-                        REGISTER
+                        Registrarse
                     </a>
                 @endif
             @endauth
