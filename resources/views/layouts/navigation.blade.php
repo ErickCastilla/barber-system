@@ -41,6 +41,11 @@
                         {{ __('Todas las Citas') }}
                     </x-nav-link>
                     @endrole
+                    @role('recepcionista')
+                    <x-nav-link :href="route('receptionist.appointments.index')" :active="request()->routeIs('receptionist.appointments.*')">
+                        {{ __('Agenda del Día') }}
+                    </x-nav-link>
+                    @endrole
                 </div>
             </div>
 
@@ -120,6 +125,11 @@
             @role('admin')
             <x-responsive-nav-link :href="route('admin.appointments.index')" :active="request()->routeIs('admin.appointments.*')">
                 {{ __('Todas las Citas') }}
+            </x-responsive-nav-link>
+            @endrole
+            @role('recepcionista')
+            <x-responsive-nav-link :href="route('receptionist.appointments.index')" :active="request()->routeIs('receptionist.appointments.*')">
+                {{ __('Agenda del Día') }}
             </x-responsive-nav-link>
             @endrole
         </div>

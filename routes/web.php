@@ -56,4 +56,16 @@ Route::middleware(['auth', 'role:cliente'])->prefix('client')->name('client.')->
     Route::get('/appointments/available-slots', [\App\Http\Controllers\Client\AppointmentController::class, 'getAvailableSlots'])->name('appointments.available-slots');
     // Guardar la cita
     Route::post('/appointments', [\App\Http\Controllers\Client\AppointmentController::class, 'store'])->name('appointments.store');
+    // Cancelar la cita (Fase 4)
+    Route::delete('/appointments/{appointment}/cancel', [\App\Http\Controllers\Client\AppointmentController::class, 'cancel'])->name('appointments.cancel');
+});
+
+// Rutas protegidas para la Recepcionista (Fase 4)
+Route::middleware(['auth', 'role:recepcionista'])->prefix('receptionist')->name('receptionist.')->group(function () {
+    // Ver agenda del día
+    Route::get('/appointments', [\App\Http\Controllers\Receptionist\AppointmentController::class, 'index'])->name('appointments.index');
+    // Marcar como completada
+    Route::patch('/appointments/{appointment}/complete', [\App\Http\Controllers\Receptionist\AppointmentController::class, 'complete'])->name('appointments.complete');
+    // Marcar como cancelada (por inasistencia, etc)
+    Route::patch('/appointments/{appointment}/cancel', [\App\Http\Controllers\Receptionist\AppointmentController::class, 'cancel'])->name('appointments.cancel');
 });

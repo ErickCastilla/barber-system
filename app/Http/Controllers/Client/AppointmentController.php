@@ -177,4 +177,35 @@ class AppointmentController extends Controller
         return redirect()->route('client.appointments.index')
             ->with('success', '¡Tu cita ha sido agendada con éxito!');
     }
+
+    /**
+     * Cancela una cita, validando que falte al menos 1 hora para su inicio.
+     */
+    public function cancel(Appointment $appointment)
+    {
+        // Validamos que la cita pertenezca al usuario logueado
+        if ($appointment->client_id !== Auth::id()) {
+            abort(403, 'Acceso denegado.');
+        }
+
+        // Combinamos la fecha y la hora de la cita en un objeto Carbon
+        $appointmentDateTime = Carbon::parse($appointment->appointment_date . ' ' . $appointment->start_time);
+        
+        // Comparamos con la hora actual
+        $now = Carbon::now();
+        $diffInMinutes = $now->diffInMinutes($appointmentDateTime, false); // false para que de negativo si ya pasó
+
+        // Si faltan menos de 60 minutos (1 hora) o ya pasó, no se puede cancelar por sistema
+        if ($diffInMinutes < 60) {
+            return redirect()->route('client.appointments.index')
+                ->with('error', 'No puedes cancelar con menos de 1 hora de antelación. Por favor, comunícate directamente con la barbería.');
+        }
+
+        // Actualizamos el estado de la cita en lugar de borrarla de la base de datos
+        // Esto permite mantener un historial de cancelaciones
+        $appointment->update(['status' => 'cancelada']);
+
+        return redirect()->route('client.appointments.index')
+            ->with('success', 'Tu cita ha sido cancelada exitosamente.');
+    }
 }
