@@ -31,6 +31,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/services/create', [\App\Http\Controllers\Admin\ServiceController::class, 'create'])->name('services.create');
     Route::post('/services', [\App\Http\Controllers\Admin\ServiceController::class, 'store'])->name('services.store');
     Route::delete('/services/{service}', [\App\Http\Controllers\Admin\ServiceController::class, 'destroy'])->name('services.destroy');
+
+    // Rutas para supervisión de citas (Fase 3)
+    Route::get('/appointments', [\App\Http\Controllers\Admin\AppointmentController::class, 'index'])->name('appointments.index');
 });
 
 // Rutas protegidas para el Barbero
@@ -38,4 +41,19 @@ Route::middleware(['auth', 'role:barbero'])->prefix('barber')->name('barber.')->
     // Rutas para la gestión de Horarios (Disponibilidad)
     Route::get('/schedules', [\App\Http\Controllers\Barber\ScheduleController::class, 'index'])->name('schedules.index');
     Route::post('/schedules', [\App\Http\Controllers\Barber\ScheduleController::class, 'store'])->name('schedules.store');
+
+    // Rutas para visualizar agenda del barbero (Fase 3)
+    Route::get('/appointments', [\App\Http\Controllers\Barber\AppointmentController::class, 'index'])->name('appointments.index');
+});
+
+// Rutas protegidas para el Cliente (Fase 3)
+Route::middleware(['auth', 'role:cliente'])->prefix('client')->name('client.')->group(function () {
+    // Ver mis citas a futuro
+    Route::get('/appointments', [\App\Http\Controllers\Client\AppointmentController::class, 'index'])->name('appointments.index');
+    // Formulario de agendamiento
+    Route::get('/appointments/create', [\App\Http\Controllers\Client\AppointmentController::class, 'create'])->name('appointments.create');
+    // Para cargar horarios disponibles vía AJAX (o fetch)
+    Route::get('/appointments/available-slots', [\App\Http\Controllers\Client\AppointmentController::class, 'getAvailableSlots'])->name('appointments.available-slots');
+    // Guardar la cita
+    Route::post('/appointments', [\App\Http\Controllers\Client\AppointmentController::class, 'store'])->name('appointments.store');
 });

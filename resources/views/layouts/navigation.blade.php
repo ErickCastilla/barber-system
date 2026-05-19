@@ -27,6 +27,19 @@
                     <x-nav-link :href="route('barber.schedules.index')" :active="request()->routeIs('barber.schedules.*')">
                         {{ __('Mis Horarios') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('barber.appointments.index')" :active="request()->routeIs('barber.appointments.*')">
+                        {{ __('Mi Agenda (Citas)') }}
+                    </x-nav-link>
+                    @endrole
+                    @role('cliente')
+                    <x-nav-link :href="route('client.appointments.index')" :active="request()->routeIs('client.appointments.*')">
+                        {{ __('Mis Citas') }}
+                    </x-nav-link>
+                    @endrole
+                    @role('admin')
+                    <x-nav-link :href="route('admin.appointments.index')" :active="request()->routeIs('admin.appointments.*')">
+                        {{ __('Todas las Citas') }}
+                    </x-nav-link>
                     @endrole
                 </div>
             </div>
@@ -94,6 +107,19 @@
             @role('barbero')
             <x-responsive-nav-link :href="route('barber.schedules.index')" :active="request()->routeIs('barber.schedules.*')">
                 {{ __('Mis Horarios') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('barber.appointments.index')" :active="request()->routeIs('barber.appointments.*')">
+                {{ __('Mi Agenda (Citas)') }}
+            </x-responsive-nav-link>
+            @endrole
+            @role('cliente')
+            <x-responsive-nav-link :href="route('client.appointments.index')" :active="request()->routeIs('client.appointments.*')">
+                {{ __('Mis Citas') }}
+            </x-responsive-nav-link>
+            @endrole
+            @role('admin')
+            <x-responsive-nav-link :href="route('admin.appointments.index')" :active="request()->routeIs('admin.appointments.*')">
+                {{ __('Todas las Citas') }}
             </x-responsive-nav-link>
             @endrole
         </div>
