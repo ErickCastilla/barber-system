@@ -10,6 +10,8 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail; // Para el envío de correos en Laravel
+use App\Mail\AppointmentConfirmationMail; // Mailable personalizado de confirmación
 
 /**
  * Controlador de Citas para el Cliente
@@ -164,7 +166,8 @@ class AppointmentController extends Controller
         // Opcional: Podríamos re-verificar colisiones en el backend antes de guardar
         // por si dos personas dieron clic al mismo tiempo.
 
-        Appointment::create([
+        // 1. Guardamos la cita creada en una variable local
+        $appointment = Appointment::create([
             'client_id' => Auth::id(),
             'barber_id' => $request->barber_id,
             'service_id' => $request->service_id,
@@ -173,6 +176,22 @@ class AppointmentController extends Controller
             'end_time' => $endTime->format('H:i:s'),
             'status' => 'pendiente', // Estado inicial
         ]);
+
+        // 2. Cargamos las relaciones para poder acceder a los datos completos en el correo y PDF
+        $appointment->load(['client', 'barber', 'service']);
+
+        // 3. Enviamos el correo de confirmación a ambos participantes dentro de un bloque try-catch
+        // Esto previene que si hay un error en el servidor de correos, la reserva de la cita no falle.
+        try {
+            // Enviamos el correo con el PDF adjunto al cliente que agendó
+            Mail::to($appointment->client->email)->send(new AppointmentConfirmationMail($appointment));
+            
+            // Enviamos el mismo correo con el PDF adjunto al barbero asignado
+            Mail::to($appointment->barber->email)->send(new AppointmentConfirmationMail($appointment));
+        } catch (\Exception $e) {
+            // Registramos el error en los logs del sistema para auditoría y depuración posterior
+            \Illuminate\Support\Facades\Log::error('Error enviando correos de confirmación de cita: ' . $e->getMessage());
+        }
 
         return redirect()->route('client.appointments.index')
             ->with('success', '¡Tu cita ha sido agendada con éxito!');
