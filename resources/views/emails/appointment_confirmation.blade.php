@@ -91,7 +91,7 @@
     <div class="container">
         <!-- Encabezado con estética premium de barbería -->
         <div class="header">
-            <h1>Erick´s Barber</h1>
+            <h1>Mutant Barber</h1>
         </div>
         
         <!-- Contenido principal del correo -->
@@ -135,7 +135,7 @@
         <!-- Pie de página informativo -->
         <div class="footer">
             <p>Este es un correo automático. Por favor, no respondas a este mensaje.</p>
-            <p>&copy; {{ date('Y') }} Barber System. Todos los derechos reservados.</p>
+            <p>&copy; {{ date('Y') }} Mutant Barber. Todos los derechos reservados.</p>
         </div>
     </div>
 </body>

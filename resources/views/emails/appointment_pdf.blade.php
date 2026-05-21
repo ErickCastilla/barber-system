@@ -163,7 +163,7 @@
 
     <!-- Encabezado de la Barbería -->
     <div class="header">
-        <h1>Barber System</h1>
+        <h1>Mutant Barber</h1>
         <p>Estilo y Profesionalismo a tu Alcance</p>
     </div>
 
@@ -252,7 +252,7 @@
 
     <!-- Sello de Generación -->
     <div class="stamp">
-        Documento generado digitalmente por Barber System el {{ now()->format('d/m/Y H:i:s') }}. Estado: {{ ucfirst($appointment->status) }}.
+        Documento generado digitalmente por Mutant Barber el {{ now()->format('d/m/Y H:i:s') }}. Estado: {{ ucfirst($appointment->status) }}.
     </div>
 
 </body>
