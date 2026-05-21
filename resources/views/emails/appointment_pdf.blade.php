@@ -192,7 +192,7 @@
                 <div class="info-card">
                     <div class="info-row">
                         <span class="label">Nombre:</span>
-                        <div class="value">{{ $appointment->client->name }}</div>
+                        <div class="value">{{ $appointment->client->name ?? 'N/A' }}</div>
                     </div>
                     <div class="info-row">
                         <span class="label">Correo:</span>
@@ -207,7 +207,7 @@
                 <div class="info-card">
                     <div class="info-row">
                         <span class="label">Nombre:</span>
-                        <div class="value">{{ $appointment->barber->name }}</div>
+                        <div class="value">{{ $appointment->barber->name ?? 'N/A' }}</div>
                     </div>
                     <div class="info-row">
                         <span class="label">Correo:</span>
@@ -231,7 +231,7 @@
         <tbody>
             <tr>
                 <td>
-                    <strong>{{ $appointment->service->name }}</strong>
+                    <strong>{{ $appointment->service->name ?? 'N/A' }}</strong>
                     <div style="font-size: 11px; color: #6b7280; margin-top: 4px;">
                         {{ $appointment->service->description }}
                     </div>

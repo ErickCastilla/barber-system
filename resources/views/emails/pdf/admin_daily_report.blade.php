@@ -41,7 +41,7 @@
     @foreach($appointmentsGrouped as $barberId => $appointments)
         @php
             // El nombre del barbero se obtiene de la primera cita de la agrupación
-            $barberName = $appointments->first()->barber->name;
+            $barberName = $appointments->first()->barber->name ?? 'N/A';
         @endphp
         <div class="barber-section">
             <div class="barber-header">
@@ -65,8 +65,8 @@
                                 {{ \Carbon\Carbon::parse($appt->start_time)->format('H:i') }} - 
                                 {{ \Carbon\Carbon::parse($appt->end_time)->format('H:i') }}
                             </td>
-                            <td>{{ $appt->client->name }}</td>
-                            <td>{{ $appt->service->name }}</td>
+                            <td>{{ $appt->client->name ?? 'N/A' }}</td>
+                            <td>{{ $appt->service->name ?? 'N/A' }}</td>
                             <td style="text-align: right;">${{ number_format($appt->service->price, 2) }}</td>
                         </tr>
                     @endforeach

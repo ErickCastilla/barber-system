@@ -29,7 +29,7 @@
     </div>
 
     <div class="barber-info">
-        Barbero: {{ $barber->name }} | Fecha: {{ \Carbon\Carbon::today()->format('d/m/Y') }}
+        Barbero: {{ $barber->name ?? 'N/A' }} | Fecha: {{ \Carbon\Carbon::today()->format('d/m/Y') }}
     </div>
 
     <table class="data-table">
@@ -48,9 +48,9 @@
                     {{ \Carbon\Carbon::parse($appt->start_time)->format('H:i') }} - 
                     {{ \Carbon\Carbon::parse($appt->end_time)->format('H:i') }}
                 </td>
-                <td>{{ $appt->client->name }}</td>
+                <td>{{ $appt->client->name ?? 'N/A' }}</td>
                 <td>
-                    <strong>{{ $appt->service->name }}</strong><br>
+                    <strong>{{ $appt->service->name ?? 'N/A' }}</strong><br>
                     <span style="font-size: 11px; color: #6b7280;">${{ number_format($appt->service->price, 2) }}</span>
                 </td>
                 <td style="text-align: right;">{{ $appt->service->duration_minutes }} min</td>

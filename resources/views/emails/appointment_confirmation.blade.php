@@ -103,15 +103,15 @@
             <div class="details-box">
                 <div class="detail-row">
                     <span class="label">Cliente:</span>
-                    <span class="value">{{ $appointment->client->name }}</span>
+                    <span class="value">{{ $appointment->client->name ?? 'N/A' }}</span>
                 </div>
                 <div class="detail-row">
                     <span class="label">Barbero:</span>
-                    <span class="value">{{ $appointment->barber->name }}</span>
+                    <span class="value">{{ $appointment->barber->name ?? 'N/A' }}</span>
                 </div>
                 <div class="detail-row">
                     <span class="label">Servicio:</span>
-                    <span class="value">{{ $appointment->service->name }}</span>
+                    <span class="value">{{ $appointment->service->name ?? 'N/A' }}</span>
                 </div>
                 <div class="detail-row">
                     <span class="label">Fecha:</span>
