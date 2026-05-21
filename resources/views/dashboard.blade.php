@@ -10,7 +10,7 @@
             <div class="bg-[#111] overflow-hidden shadow-2xl sm:rounded-lg relative border border-gray-800">
                 <!-- Imagen de fondo -->
                 <div class="absolute inset-0 z-0">
-                    <img src="{{ asset('images/dashboard_hero.png') }}" alt="Fondo Barbería" class="w-full h-full object-cover opacity-30">
+                    <img src="{{ asset('images/mutant_barber_hero.png') }}" alt="Fondo Barbería" class="w-full h-full object-cover opacity-30">
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
                 </div>
 

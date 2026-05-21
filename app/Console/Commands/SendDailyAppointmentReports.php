@@ -18,7 +18,7 @@ class SendDailyAppointmentReports extends Command
      *
      * @var string
      */
-    protected $signature = 'reports:send-daily';
+    protected $signature = 'reports:send-daily {--date= : Fecha específica para generar el reporte (formato YYYY-MM-DD)}';
 
     /**
      * La descripción breve del comando.
@@ -32,9 +32,16 @@ class SendDailyAppointmentReports extends Command
      */
     public function handle()
     {
-        // 1. Obtenemos la fecha de hoy
-        $today = Carbon::today()->toDateString();
-        $this->info("Iniciando envío de reportes diarios para la fecha: {$today}");
+        // 1. Obtenemos la fecha (ya sea la proporcionada por opción o la de hoy)
+        $dateOption = $this->option('date');
+        
+        if ($dateOption) {
+            $today = Carbon::parse($dateOption)->toDateString();
+            $this->info("Iniciando envío de reportes diarios para la fecha solicitada: {$today}");
+        } else {
+            $today = Carbon::today()->toDateString();
+            $this->info("Iniciando envío de reportes diarios para la fecha de hoy: {$today}");
+        }
 
         // 2. Obtenemos TODAS las citas programadas para hoy, cargando sus relaciones.
         // Solo incluimos citas pendientes o confirmadas.

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Erick's Barber</title>
+    <title>Mutant Barber</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -22,7 +22,7 @@
     <!-- Header -->
     <header class="w-full pt-8 pb-4 px-8 lg:px-16 flex justify-between items-center z-10">
         <div class="text-2xl font-bold tracking-wider uppercase text-white">
-            ERICK'S BARBER
+            MUTANT BARBER
         </div>
     </header>
 
@@ -30,7 +30,7 @@
     <main class="flex-grow flex items-center justify-center px-4 sm:px-8 lg:px-16 py-4 lg:py-8 z-0">
         <div class="w-full max-w-[1200px] relative group">
             <div class="absolute -inset-1 bg-gradient-to-r from-gray-800 to-gray-600 rounded-sm blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-            <img src="{{ asset('images/barbershop_hero.png') }}" alt="Erick's Barber Shop" class="relative w-full h-[40vh] md:h-[60vh] object-cover shadow-2xl rounded-sm opacity-90 transition-opacity duration-700 ease-in-out group-hover:opacity-100 border border-gray-900">
+            <img src="{{ asset('images/mutant_barber_hero.png') }}" alt="Mutant Barber Shop" class="relative w-full h-[40vh] md:h-[60vh] object-cover shadow-2xl rounded-sm opacity-90 transition-opacity duration-700 ease-in-out group-hover:opacity-100 border border-gray-900">
         </div>
     </main>
 

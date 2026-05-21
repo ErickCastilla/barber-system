@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Modelo Appointment (Citas)
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Appointment extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     // Campos que se pueden asignar masivamente
     protected $fillable = [

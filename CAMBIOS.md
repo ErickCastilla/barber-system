@@ -313,3 +313,86 @@ Schedule::command('reports:send-daily')->dailyAt('08:00');
 * **Rutas completas de Plantillas PDF:**
   - PDF de Barberos: `c:\Users\ErickCastilla\Documents\OctavoSemestre\Backend\barber-system\resources\views\emails\pdf\barber_daily_report.blade.php` (Muestra una tabla con el horario, cliente, servicio y duración de las citas asignadas al barbero).
   - PDF de Administradores: `c:\Users\ErickCastilla\Documents\OctavoSemestre\Backend\barber-system\resources\views\emails\pdf\admin_daily_report.blade.php` (Agrupa de manera iterativa todos los barberos e imprime un subtotal de ingresos esperados por barbero y un listado de todas las citas del negocio).
+
+---
+
+## FASE 3: Implementación de Soft Deletes (Eliminación Lógica)
+
+### ¿Cómo funcionan los Soft Deletes?
+Es un mecanismo de seguridad de Laravel que evita que los datos se borren físicamente de la base de datos cuando alguien llama a la función `delete()`. En su lugar, el sistema simplemente llena una columna especial llamada `deleted_at` con la fecha y hora de la "eliminación".
+Gracias a esto:
+- Las consultas normales ignorarán ese registro automáticamente (para los usuarios parecerá que se borró).
+- La base de datos mantendrá el registro intacto para reportes financieros, historiales médicos/cortes, o auditorías futuras.
+
+### 1. Nueva Migración de Base de Datos
+* **Ruta completa del archivo:** `c:\Users\ErickCastilla\Documents\OctavoSemestre\Backend\barber-system\database\migrations\2026_05_20_205730_add_deleted_at_to_appointments_table.php`
+* **Qué se modificó:** Se generó una migración dedicada para alterar la tabla `appointments` existente agregándole la columna `deleted_at`.
+* **Código Modificado (métodos up y down):**
+```php
+    public function up(): void
+    {
+        Schema::table('appointments', function (Blueprint $table) {
+            $table->softDeletes(); // Añade la columna de seguridad
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('appointments', function (Blueprint $table) {
+            $table->dropSoftDeletes(); // Permite revertir o deshacer la migración
+        });
+    }
+```
+
+### 2. Actualización del Modelo Appointment
+* **Ruta completa del archivo:** `c:\Users\ErickCastilla\Documents\OctavoSemestre\Backend\barber-system\app\Models\Appointment.php`
+* **Qué se modificó:** Se inyectó la funcionalidad de Laravel en el modelo a través del rasgo (`Trait`) `SoftDeletes`. Ahora cualquier intento de borrado sobre este modelo será interceptado y convertido en un borrado lógico.
+* **Código Modificado:**
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes; // 1. Importación del Trait de Laravel
+
+class Appointment extends Model
+{
+    // 2. Inyección de SoftDeletes junto al Factory
+    use HasFactory, SoftDeletes; 
+
+    protected $fillable = [
+        'client_id',
+        // ...resto de los campos asignables
+```
+
+### 3. Interfaz de Administración para Soft Deletes
+* **Ruta completa del archivo:** `c:\Users\ErickCastilla\Documents\OctavoSemestre\Backend\barber-system\routes\web.php`
+* **Qué se modificó:** Se implementó un botón en la tabla principal para que el Administrador envíe las citas a la papelera. Las citas se ocultan de la tabla web pero conservan intacto su historial en la columna `deleted_at`.
+* **Código de las modificaciones (Blade y Controlador):**
+  - **Botón en Blade** (`c:\Users\ErickCastilla\Documents\OctavoSemestre\Backend\barber-system\resources\views\admin\appointments\index.blade.php`):
+```blade
+<form action="{{ route('admin.appointments.destroy', $appointment) }}" method="POST">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="text-red-600 hover:text-red-900">Eliminar</button>
+</form>
+```
+  - **Método en el Controlador** (`c:\Users\ErickCastilla\Documents\OctavoSemestre\Backend\barber-system\app\Http\Controllers\Admin\AppointmentController.php`):
+```php
+    public function destroy(Appointment $appointment)
+    {
+        $appointment->delete(); // Ejecuta el Soft Delete
+        return redirect()->route('admin.appointments.index')
+            ->with('success', 'La cita ha sido eliminada y enviada a la papelera de reciclaje.');
+    }
+```
+
+---
+
+## FASE 4: Pulido Estético y Traducciones (Final)
+### Ajustes Visuales y de Marca
+* **Cambio de Nombre:** Se actualizó el nombre comercial del proyecto de "Erick's Barber" a **"Mutant Barber"** en toda la interfaz (principalmente en `welcome.blade.php`).
+* **Actualización de Dashboard:** Se configuró la vista `dashboard.blade.php` para consumir la nueva fotografía grupal del equipo (`mutant_barber_hero.png`).
+* **Traducción de Menús:** Se tradujeron al español las opciones del menú desplegable del perfil en `navigation.blade.php` ("Profile" -> "Perfil", "Log Out" -> "Cerrar sesión") tanto en la vista de escritorio como en la vista responsiva para dispositivos móviles.

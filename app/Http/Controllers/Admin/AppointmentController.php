@@ -26,4 +26,15 @@ class AppointmentController extends Controller
 
         return view('admin.appointments.index', compact('appointments'));
     }
+
+    /**
+     * Envía una cita a la papelera (Soft Delete).
+     */
+    public function destroy(Appointment $appointment)
+    {
+        $appointment->delete(); // Ejecuta el Soft Delete
+
+        return redirect()->route('admin.appointments.index')
+            ->with('success', 'La cita ha sido eliminada y enviada a la papelera de reciclaje.');
+    }
 }
